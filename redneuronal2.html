@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Neuronal Ejemplo 1</title>
+    <!-- 
+        Se importa la libreria de TensorFlow.js  
+     -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+    <!-- 
+        Se importa la libreria de TensorFlow.js para el uso de la GPU
+     -->
+     
+<style>
+body {
+align-items: center;
+justify-content: center;
+display: flex;
+
+}
+.resu{
+    
+    background-color: #652020;
+    font-size: 20px;
+    font-weight: bold;
+    color: rgb(206, 172, 172);
+    align-items: center;
+    justify-content: center;
+    display: flex;  
+
+}
+.but{
+    background-color: #168a43;
+    font-size: 10px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    align-items: center;
+    justify-content: center;
+    display: flex;  
+    border-radius: 10px;
+    border: 1px solid rgb(206, 172, 172);
+    padding: 10px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.cen{
+    align-items: center;
+    justify-content: center;
+    display: flex;  
+    flex-direction: column;
+
+}
+tr {
+    border: 1px solid rgb(206, 172, 172);
+    padding: 10px;
+    margin: 10px;
+}
+td {
+    border: 1px solid rgb(206, 172, 172);
+    padding: 10px;
+    margin: 10px;
+}
+table {
+    border: 1px solid rgb(206, 172, 172);
+    padding: 10px;
+    margin: 10px;
+}
+
+
+
+</style>
+
+<body>
+<section class="container" style="margin-left: 20%;">
+ <h3>Ingresa los valores a comparar</h3>
+ <!-- Inputs para valores de entrada y salida-->
+<div>
+    <input class type="text" id="valor1" placeholder="Datos de entrada">
+    <input type="text" id="valor2" placeholder="Datos para comparar">
+</div>
+<!-- Boton para ejecutar la funcion-->
+<div class="cen" >
+    <button id="" class="but" onclick=" modelo() ">Ejecutar</button>
+
+<div id="Resultado" class="resu">
+</div>
+
+</section>
+
+<section style="margin: auto;">
+    <h3>Función</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>2x + 3 = y</th>
+            <tr>
+                
+                <th>Entrada</th>
+                <th>Salida</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>7</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>9</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>11</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>13</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>15</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>?</td>
+        </tbody>
+</section>
+
+</body>
+
+<script>
+//Se deben de coger los datos de los inputs y enseñarle a la maquina
+async function modelo( ){
+    const entrada = document.getElementById("valor1").value;
+    let ArregloEntrada = entrada.split(","); 
+    //cambiar los valores de string a numero
+    ArregloEntrada = ArregloEntrada.map(Number);
+
+    console.log(ArregloEntrada);
+    const salida = document.getElementById("valor2").value;
+    let ArregloSalida = salida.split(",");
+    ArregloSalida = ArregloSalida.map(Number);
+    console.log(ArregloSalida);
+    const model = tf.sequential();
+    model.add(tf.layers.dense({units: 1, inputShape: [1]}));
+    model.compile({loss: 'meanSquaredError', optimizer: 'sgd'});
+    // Entrenar la red neuronal
+    const xs = tf.tensor2d(ArregloEntrada, [ArregloEntrada.length, 1]);
+    const ys = tf.tensor2d(ArregloSalida, [ArregloSalida.length, 1]);
+    await model.fit(xs, ys, {epochs: 2000});
+    // Predecir
+    const output = model.predict(tf.tensor2d([ArregloSalida.length+1], [1, 1]));
+    const con = ArregloEntrada.length;
+    document.getElementById("Resultado").innerHTML = output.dataSync();
+
+}
+
+</script>
+
+</html>
